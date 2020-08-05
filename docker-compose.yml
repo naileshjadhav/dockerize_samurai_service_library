@@ -13,7 +13,7 @@ services:
     ports:
     - 3306:3306
     volumes:
-    - mysql-data:/opt/mysql-data
+    - /opt/mysql-data:/var/lib/mysql
   samurai-service:
     image: nailesh98/samuraiservicelibrary:1.0
     container_name: samuraiservicelibrary
@@ -28,5 +28,3 @@ services:
       dockerfile: Dockerfile
 networks:
   samurai-mysql-network:  
-volumes:
-  mysql-data: 
