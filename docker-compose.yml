@@ -1,0 +1,32 @@
+version: '3.3'
+services:
+  mysql-container-service:
+    image: mysql:latest
+    restart: always
+    container_name: mysql-container-service
+    networks:
+    - samurai-mysql-network
+    environment:
+    - MYSQL_ROOT_PASSWORD=root@123
+    - MYSQL_DATABASE=samurai
+    - MYSQL_USER=root
+    ports:
+    - 3306:3306
+    volumes:
+    - mysql-data:/opt/mysql-data
+  samurai-service:
+    image: nailesh98/samuraiservicelibrary:1.0
+    container_name: samuraiservicelibrary
+    ports:
+    - 8084:8084
+    networks:
+    - samurai-mysql-network
+    links:
+    - mysql-container-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+networks:
+  samurai-mysql-network:  
+volumes:
+  mysql-data: 
