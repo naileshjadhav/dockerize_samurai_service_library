@@ -1,12 +1,7 @@
 package com.zensar.service.library.controller;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,40 +22,28 @@ import org.springframework.web.bind.annotation.RestController;
 public class InstallationGuideController {
 	private static final Logger log = LoggerFactory.getLogger(InstallationGuideController.class);
 
-	@GetMapping("/file/{fileName:.+}")
-	public ResponseEntity<?> downloadFileFromLocalDocker(@PathVariable String fileName) throws IOException {
-		String contents = "";
-		try (InputStream inputStream = getClass().getResourceAsStream("/" + fileName.toLowerCase());
-				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-			contents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-		}
-		 log.info("Installation guide file path:" + contents);
-		// InputStreamResource resource = new InputStreamResource(new
-		// FileInputStream(file));
-		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/octet-stream"))
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").body(contents);
-	}
+//	@GetMapping("/file/{fileName:.+}")
+//	public ResponseEntity<?> downloadFileFromLocalDocker(@PathVariable String fileName) throws IOException {
+//		String contents = "";
+//		try (InputStream inputStream = getClass().getResourceAsStream("/" + fileName.toLowerCase());
+//				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+//			contents = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+//		}
+//		log.info("Installation guide file path:" + contents);
+//		// InputStreamResource resource = new InputStreamResource(new
+//		// FileInputStream(file));
+//		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/octet-stream"))
+//				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").body(contents);
+//	}
 
 	@GetMapping("/download/{fileName:.+}")
 	public ResponseEntity<?> downloadFileFromLocal(@PathVariable String fileName) throws IOException {
-		//String fileNameNew = fileName.toLowerCase() + "_installation_guide.txt";
-		//log.info("File to doanload {}",fileNameNew);
-		File file = new ClassPathResource(fileName.toLowerCase()).getFile();
-		log.info("Installation guide file :" + file.isFile());
-		InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+		InputStream file = new ClassPathResource(fileName.toLowerCase()).getInputStream();
+		log.info("Installation guide available :" + file.available());
+		InputStreamResource resource = new InputStreamResource(file);
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/octet-stream"))
 				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").body(resource);
 	}
-
-//	@GetMapping("/{fileName:.+}")
-//	public ResponseEntity<?> downloadInstallationGuideFromLocal(@PathVariable String fileName) throws IOException {
-//		String fileNameNew = fileName.toLowerCase() + "_installation_guide.txt";
-//		log.info("File to download old {}",fileNameNew);
-//		File file = new ClassPathResource(fileNameNew).getFile();
-//		log.info("Installation guide file path old:" + file.getAbsolutePath());
-//		InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
-//		return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/octet-stream"))
-//				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"").body(resource);
-//	}
 
 }
