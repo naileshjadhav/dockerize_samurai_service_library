@@ -18,6 +18,7 @@ import com.zensar.service.library.model.ServiceLibraryDto;
 import com.zensar.service.library.repository.ServiceInstanceRepository;
 import com.zensar.service.library.repository.ServiceLibraryRespository;
 import com.zensar.service.library.util.BeanUtilToCopyNonNullProperties;
+import com.zensar.service.library.util.ObjectMapperUtils;
 
 @Service
 public class SamuraiServiceInstanceService {
@@ -168,24 +169,40 @@ public class SamuraiServiceInstanceService {
 	}
 
 	/**
+	 * @return list of all active service instances
+	 */
+	public List<ServiceInstanceDto> getAllActiveServiceInstances() {
+		log.info("Start getAllActiveServiceInstances..");
+		List<ServiceInstance> instances = (List<ServiceInstance>) instanceRepository.findAll();
+		List<ServiceInstanceDto> instanceDtos = instances.stream().distinct()
+				.filter(e -> e.getIsDecomissioned() == false && e.getIsInActive() == false)
+				.map(v -> new ServiceInstanceDto(v.getServiceInstanceId(), v.getServiceInstanceName(),
+						v.getIsDecomissioned(), v.getIsInActive(),
+						ObjectMapperUtils.mapAll(v.getServiceLibrary(), ServiceLibraryDto.class)))
+				.collect(Collectors.toList());
+		log.info("Start getAllActiveServiceInstances..");
+		return instanceDtos;
+	}
+
+	/**
 	 * @param Instance id
 	 * @return Instance dto
 	 */
-	public ServiceInstanceDto getServiceInstanceById(Long instanceId) {
-		log.info("Start getServiceInstanceById..");
-		ServiceInstance instance = instanceRepository.findById(instanceId)
-				.orElseThrow(() -> new ResourceNotFound("Resource not found for instance id: " + instanceId));
-		ServiceInstanceDto target = new ServiceInstanceDto();
-		BeanUtils.copyProperties(instance, target);
-		List<ServiceLibrary> library = instance.getServiceLibrary();
-		List<ServiceLibraryDto> serviceLibrary = library.stream().filter(e -> e.isServiceDecommisioned() == false)
-				.map(e -> new ServiceLibraryDto(null, null, e.getServiceName(), e.getTypeOfService(),
-						e.isServiceDecommisioned(), e.getServiceDescription(), e.getCreationDate(), e.getServiceId(),
-						e.getLogoImage()))
-				.collect(Collectors.toList());
-		target.setServiceLibrary(serviceLibrary);
-		log.info("End getServiceInstanceById..");
-		return target;
-	}
+//	public ServiceInstanceDto getServiceInstanceById(Long instanceId) {
+//		log.info("Start getServiceInstanceById..");
+//		ServiceInstance instance = instanceRepository.findById(instanceId)
+//				.orElseThrow(() -> new ResourceNotFound("Resource not found for instance id: " + instanceId));
+//		ServiceInstanceDto target = new ServiceInstanceDto();
+//		BeanUtils.copyProperties(instance, target);
+//		List<ServiceLibrary> library = instance.getServiceLibrary();
+//		List<ServiceLibraryDto> serviceLibrary = library.stream().filter(e -> e.isServiceDecommisioned() == false)
+//				.map(e -> new ServiceLibraryDto(null, null, e.getServiceName(), e.getTypeOfService(),
+//						e.isServiceDecommisioned(), e.getServiceDescription(), e.getCreationDate(), e.getServiceId(),
+//						e.getLogoImage()))
+//				.collect(Collectors.toList());
+//		target.setServiceLibrary(serviceLibrary);
+//		log.info("End getServiceInstanceById..");
+//		return target;
+//	}
 
 }

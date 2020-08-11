@@ -33,7 +33,8 @@ public class SubCategoryService {
 
 	public SubCategoryDto findSubCategoryByName(String subCategoryName) {
 
-		SubCategory subCategory = repository.findBysubCategoryName(subCategoryName);
+		SubCategory subCategory = repository.findBysubCategoryName(subCategoryName)
+				.orElseThrow(() -> new ResourceNotFound("Resource Not found for subcategory name: " + subCategoryName));
 		SubCategoryDto target = new SubCategoryDto();
 		BeanUtils.copyProperties(subCategory, target);
 		return target;

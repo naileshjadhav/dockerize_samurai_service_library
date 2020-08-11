@@ -1,5 +1,7 @@
 package com.zensar.service.library.controller;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,13 +57,23 @@ public class SamuraiServiceInstanceController {
 		log.info("End getServiceInstanceByName....");
 		return new ResponseEntity<ServiceInstanceDto>(dto, HttpStatus.OK);
 	}
-
-	@GetMapping(value = "/instance/id/{instanceId}")
-	public ResponseEntity<ServiceInstanceDto> getServiceInstanceById(@PathVariable Long instanceId) {
-		log.info("Starting getServiceInstanceById....");
-		ServiceInstanceDto dto = this.service.getServiceInstanceById(instanceId);
-		log.info("End getServiceInstanceById....");
-		return new ResponseEntity<ServiceInstanceDto>(dto, HttpStatus.OK);
+	
+	@GetMapping(value = "/instances")
+	public ResponseEntity<List<ServiceInstanceDto>> getAllServiceInstances() {
+		log.info("Starting getAllActiveServiceInstances....");
+		List<ServiceInstanceDto> dtos = this.service.getAllActiveServiceInstances();
+		log.info("End getAllActiveServiceInstances....");
+		return new ResponseEntity<List<ServiceInstanceDto>>(dtos, HttpStatus.OK);
 	}
+
+//	@GetMapping(value = "/instance/id/{instanceId}")
+//	public ResponseEntity<ServiceInstanceDto> getServiceInstanceById(@PathVariable Long instanceId) {
+//		log.info("Starting getServiceInstanceById....");
+//		ServiceInstanceDto dto = this.service.getServiceInstanceById(instanceId);
+//		log.info("End getServiceInstanceById....");
+//		return new ResponseEntity<ServiceInstanceDto>(dto, HttpStatus.OK);
+//	}
+	
+	
 
 }

@@ -12,6 +12,10 @@ services:
     - MYSQL_USER=root
     ports:
     - 3306:3306
+    healthcheck:
+      test: "/etc/init.d/mysql status"
+      interval: 1s
+      retries: 120
     volumes:
     - /opt/mysql-data:/var/lib/mysql
   samurai-service:
@@ -19,9 +23,19 @@ services:
     container_name: samuraiservicelibrary
     ports:
     - 8084:8084
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-container-service:3306/samurai?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "root@123"
+      spring_datasource_initialization-mode: "always"
+      spring_jpa_properties_hibernate_default_schema: "schema"
+      spring_jpa.hibernate_ddl-auto: "none"
+      spring_datasource_platform: "mysql"
     networks:
     - samurai-mysql-network
     links:
+    - mysql-container-service
+    depends_on:
     - mysql-container-service
     build:
       context: .
