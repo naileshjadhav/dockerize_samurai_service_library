@@ -19,8 +19,8 @@ services:
     volumes:
     - /opt/mysql-data:/var/lib/mysql
   samurai-service:
-    image: nailesh98/samuraiservicelibrary:1.0
-    container_name: samuraiservicelibrary
+    image: nailesh98/samuraiservicelibrary-integrated:1.0
+    container_name: samuraiservicelibrary-integrated
     ports:
     - 8084:8084
     environment:

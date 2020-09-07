@@ -20,6 +20,12 @@
 	</properties>
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/com.jcraft/jsch -->
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.55</version>
+		</dependency>
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
@@ -58,7 +64,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>SamuraiServiceLibrary</finalName>
+		<finalName>samuraiIntegrated</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

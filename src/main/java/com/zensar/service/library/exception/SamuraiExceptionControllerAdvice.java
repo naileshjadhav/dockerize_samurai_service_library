@@ -16,12 +16,30 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.util.WebUtils;
 
 @ControllerAdvice
 public class SamuraiExceptionControllerAdvice extends ResponseEntityExceptionHandler {
 
+	/**
+	 * @param ex
+	 * @return
+	 */
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<ErrorDetails> handleMaxSizeException(MaxUploadSizeExceededException ex) {
+		ErrorDetails errorDetails = new ErrorDetails();
+		errorDetails.setMessage("File larger than 2MB!!");
+		errorDetails.setDetails(ex.getLocalizedMessage());
+		errorDetails.setStatus(HttpStatus.EXPECTATION_FAILED.name());
+		errorDetails.setTimestamp(new Date());
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(errorDetails);
+	}
+
+	/**
+	 * This method handleMethodArgumentNotValid return object
+	 */
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
